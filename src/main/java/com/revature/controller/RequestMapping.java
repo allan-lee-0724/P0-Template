@@ -5,7 +5,7 @@ import com.revature.exceptions.NotLoggedInException;
 import io.javalin.Javalin;
 
 public class RequestMapping {
-	
+
 	private static AuthenticateController authController = new AuthenticateController();
 	private static PlanetController planetController = new PlanetController();
 	private static MoonController moonController = new MoonController();

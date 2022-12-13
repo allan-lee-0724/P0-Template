@@ -1,6 +1,5 @@
 package com.revature;
 
-
 import com.revature.controller.RequestMapping;
 
 import io.javalin.Javalin;
