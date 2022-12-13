@@ -2,7 +2,6 @@ package com.revature.repository;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class PlanetDao {
 	 * arraylist, but the method could succeed with no planets returned, so this is not an ideal solution.
 	 * Instead we will let the service layer and/or API handle the exception being thrown
 	 */
-    public List<Planet> getAllPlanets() throws SQLException { 
+    public List<Planet> getAllPlanets(){ 
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "select * from planets";
 			Statement statement = connection.createStatement();
@@ -41,6 +40,9 @@ public class PlanetDao {
 
 			return planets;
 
+		} catch(SQLException e){
+			System.out.println(e.getMessage());
+			return List.of();
 		}
 	}
 
@@ -48,36 +50,58 @@ public class PlanetDao {
 		try(Connection connection = ConnectionUtil.createConnection()){
 			UserDao ud = new UserDao();
 			User user = ud.getUserByUsername(owner);
-			if(user.getUsername().equals("")){
-				throw new IOException();
-			} else{
-				int userId = user.getId();
-				String sql = "select * from planets where ownId = ? and name = ?";
-				PreparedStatement ps = connection.prepareStatement(sql);
-
-				ps.setInt(1, userId);
-				ps.setString(2, planetName);
-
-				ResultSet rs = ps.executeQuery();
-				rs.next();
-
-				Planet planet = new Planet();
-				planet.setId(rs.getInt(1));
-				planet.setOwnerId(userId);
-				planet.setName(planetName);
-
-				return planet;
-			}
 			
-		} catch (SQLException | IOException e){
+			int userId = user.getId();
+			String sql = "select * from planets where ownerid = ? and name = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+
+			ps.setInt(1, userId);
+			ps.setString(2, planetName);
+
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+
+			Planet planet = new Planet();
+			planet.setId(rs.getInt(1));
+			planet.setOwnerId(userId);
+			planet.setName(planetName);
+
+			return planet;	
+			
+			
+		} catch (SQLException e){
 			System.out.println(e.getMessage());
 			return new Planet();
 		}
 	}
 
 	public Planet getPlanetById(String username, int planetId) {
-		// TODO Auto-generated method stub
-		return null;
+		try(Connection connection = ConnectionUtil.createConnection()){
+			UserDao ud = new UserDao();
+			User user = ud.getUserByUsername(username);
+
+			int userId = user.getId();
+			String sql = "select * from planets where ownerid = ? and id = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+
+			ps.setInt(1, user.getId());
+			ps.setInt(2, planetId);
+
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+
+			Planet planet = new Planet();
+			planet.setId(planetId);
+			planet.setName(rs.getString(2));
+			planet.setOwnerId(userId);
+
+			return planet;
+
+
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return new Planet();
+		}
 	}
 
 	public Planet createPlanet(String username, Planet p) {
@@ -89,27 +113,25 @@ public class PlanetDao {
 			User user = new User();
 
 			user = ud.getUserByUsername(username);
-			if(user.getUsername().equals("")){
-				throw new IOException();
-			} else{
-				p.setOwnerId(user.getId());
-				ps.setString(1, p.getName());
-				ps.setInt(2, p.getOwnerId());
+			
+			p.setOwnerId(user.getId());
+			ps.setString(1, p.getName());
+			ps.setInt(2, p.getOwnerId());
 
-				ps.execute();
-				ResultSet rs = ps.getGeneratedKeys();
-				rs.next();
+			ps.execute();
+			ResultSet rs = ps.getGeneratedKeys();
+			rs.next();
 
-				Planet newPlanet = new Planet();
-				int newId = rs.getInt("id");
-				newPlanet.setId(newId);
-				newPlanet.setOwnerId(p.getOwnerId());
-				newPlanet.setName(p.getName());
+			Planet newPlanet = new Planet();
+			int newId = rs.getInt("id");
+			newPlanet.setId(newId);
+			newPlanet.setOwnerId(p.getOwnerId());
+			newPlanet.setName(p.getName());
 
-				return newPlanet;
+			return newPlanet;	
 
-			}
-		} catch(SQLException | IOException e){
+			
+		} catch(SQLException e){
 			System.out.println(e.getMessage());
 			return new Planet();
 		}

@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.models.Planet;
@@ -13,27 +14,24 @@ public class PlanetService {
 		this.dao = new PlanetDao();
 	}
 
-	public List<Planet> getAllPlanets() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Planet> getAllPlanets(){
+		return this.dao.getAllPlanets();
 	}
 
 	public Planet getPlanetByName(String owner, String planetName) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dao.getPlanetByName(owner, planetName);
 	}
 
 	public Planet getPlanetById(String username, int planetId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dao.getPlanetById(username, planetId);
 	}
 
 	public Planet createPlanet(String username, Planet p) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dao.createPlanet(username, p);
 	}
 
 	public void deletePlanetById(int planetId) {
-		// TODO Auto-generated method stub
+		this.dao.deletePlanetById(planetId);
 	}
 }
+

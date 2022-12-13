@@ -47,7 +47,7 @@ public class PlanetController {
 		User u = ctx.sessionAttribute("user");
 		
 		Planet createdPlanet = pService.createPlanet(u.getUsername(),planetToBeCreated);
-		
+
 		ctx.json(createdPlanet).status(201);
 	}
 
