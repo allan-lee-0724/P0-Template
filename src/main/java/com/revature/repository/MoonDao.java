@@ -18,7 +18,7 @@ public class MoonDao {
     
 	public static Logger logger = LoggerFactory.getLogger(MoonDao.class);
 	
-    public List<Moon> getAllMoons(){
+    public List<Moon> getAllMoons() throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "select * from moons";
 			Statement statement = connection.createStatement();
@@ -38,10 +38,7 @@ public class MoonDao {
 
 			return moons;
 
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return List.of();
-		}
+		} 
 	}
 
 	public Moon getMoonByName(String username, String moonName) {
@@ -49,7 +46,7 @@ public class MoonDao {
 			UserDao ud = new UserDao();
 			User user = ud.getUserByUsername(username);
 			
-			String sql = "select * from moons where ownerid = ? and name = ?";
+			String sql = "select * from moons where ownerId = ? and name = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, user.getId());
 			ps.setString(2, moonName);
@@ -74,7 +71,7 @@ public class MoonDao {
 			UserDao ud = new UserDao();
 			User user = ud.getUserByUsername(username);
 			
-			String sql = "select * from moons where ownerid = ? and id = ?";
+			String sql = "select * from moons where ownerId = ? and id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setInt(1, user.getId());
@@ -134,19 +131,14 @@ public class MoonDao {
 			int rowsAffected = ps.executeUpdate();
 			System.out.println("Rows affected: " + rowsAffected);
 
-			if(rowsAffected == 0){
-				throw new SQLException();
-			}
 		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			
-			logger.error("Unable to delete Moon by ID: ENTRY NOT FOUND");
+			System.out.println(e.getMessage()); // Good spot to add some logging?
 		}
 	}
 
-	public List<Moon> getMoonsFromPlanet(int planetId){
+	public List<Moon> getMoonsFromPlanet(int planetId) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
-			String sql = "select * from moons where planetid = ?";
+			String sql = "select * from moons where myPlanetId = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setInt(1, planetId);
@@ -165,9 +157,6 @@ public class MoonDao {
 
 			return moons;
 
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return List.of();
-		}
+		} 
 	}
 }

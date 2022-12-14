@@ -14,7 +14,7 @@ public class MoonService {
 		this.dao = new MoonDao();
 	}
 
-	public List<Moon> getAllMoons(){
+	public List<Moon> getAllMoons() throws SQLException{
 		return this.dao.getAllMoons();
 	}
 
@@ -34,7 +34,7 @@ public class MoonService {
 		this.dao.deleteMoonById(moonId);
 	}
 
-	public List<Moon> getMoonsFromPlanet(int planetId){
+	public List<Moon> getMoonsFromPlanet(int planetId) throws SQLException{
 		return this.dao.getMoonsFromPlanet(planetId);
 	}
 }

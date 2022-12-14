@@ -20,7 +20,7 @@ public class PlanetDao {
 	 * arraylist, but the method could succeed with no planets returned, so this is not an ideal solution.
 	 * Instead we will let the service layer and/or API handle the exception being thrown
 	 */
-    public List<Planet> getAllPlanets(){ 
+    public List<Planet> getAllPlanets() throws SQLException{ 
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "select * from planets";
 			Statement statement = connection.createStatement();
@@ -52,7 +52,7 @@ public class PlanetDao {
 			User user = ud.getUserByUsername(owner);
 			
 			int userId = user.getId();
-			String sql = "select * from planets where ownerid = ? and name = ?";
+			String sql = "select * from planets where ownerId = ? and name = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setInt(1, userId);
@@ -81,7 +81,7 @@ public class PlanetDao {
 			User user = ud.getUserByUsername(username);
 
 			int userId = user.getId();
-			String sql = "select * from planets where ownerid = ? and id = ?";
+			String sql = "select * from planets where ownerId = ? and id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setInt(1, user.getId());

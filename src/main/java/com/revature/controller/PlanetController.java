@@ -1,5 +1,6 @@
 package com.revature.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.models.Moon;
@@ -7,17 +8,25 @@ import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.service.MoonService;
 import com.revature.service.PlanetService;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import io.javalin.http.Context;
 import io.javalin.validation.Validator;
 
 public class PlanetController {
 	
+	public static Logger logger = LoggerFactory.getLogger(PlanetController.class);
+
 	private PlanetService pService = new PlanetService();
 
 	public void getAllPlanets(Context ctx) {
 		
-		ctx.json(pService.getAllPlanets()).status(200);
+		try{
+			ctx.json(pService.getAllPlanets()).status(200);
+		} catch (SQLException e){
+			logger.error(e.getMessage());
+		}
 	}
 
 	public void getPlanetByName(Context ctx) {

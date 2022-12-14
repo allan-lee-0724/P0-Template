@@ -1,21 +1,30 @@
 package com.revature.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.models.Moon;
 import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.service.MoonService;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import io.javalin.http.Context;
 
 public class MoonController {
+
+	public static Logger logger = LoggerFactory.getLogger(PlanetController.class);
 	
 	private MoonService mService = new MoonService();
 
 	public void getAllMoons(Context ctx) {
 		
-		ctx.json(mService.getAllMoons()).status(200);
+		try{
+			ctx.json(mService.getAllMoons()).status(200);
+		} catch (SQLException e){
+			logger.error(e.getMessage());
+		}
 	}
 
 	public void getMoonByName(Context ctx) {
@@ -61,8 +70,14 @@ public class MoonController {
 		
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		
-		List<Moon> moonList = mService.getMoonsFromPlanet(planetId);
+		try{
+			List<Moon> moonList = mService.getMoonsFromPlanet(planetId);
+
+			ctx.json(moonList).status(200);
+		} catch(SQLException e){
+			logger.error(e.getMessage());
+		}
 		
-		ctx.json(moonList).status(200);
+		
 	}
 }
