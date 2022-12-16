@@ -18,7 +18,7 @@ public class MoonController {
 	
 	private MoonService mService = new MoonService();
 
-	public void getAllMoons(Context ctx) {
+	public void getAllMoons(Context ctx) throws SQLException{
 		
 		try{
 			ctx.json(mService.getAllMoons()).status(200);
@@ -27,7 +27,7 @@ public class MoonController {
 		}
 	}
 
-	public void getMoonByName(Context ctx) {
+	public void getMoonByName(Context ctx) throws SQLException{
 		
 		User u = ctx.sessionAttribute("user");
 		String moonName = ctx.pathParam("name");
@@ -37,7 +37,7 @@ public class MoonController {
 		ctx.json(m).status(200);
 	}
 
-	public void getMoonById(Context ctx) {
+	public void getMoonById(Context ctx) throws SQLException{
 		
 		User u = ctx.sessionAttribute("user");
 		int moonId = ctx.pathParamAsClass("id", Integer.class).get();
@@ -47,7 +47,7 @@ public class MoonController {
 		ctx.json(m).status(200);
 	}
 
-	public void createMoon(Context ctx) {
+	public void createMoon(Context ctx) throws SQLException{
 		
 		Moon m = ctx.bodyAsClass(Moon.class);
 		User u = ctx.sessionAttribute("user");
@@ -57,7 +57,7 @@ public class MoonController {
 		ctx.json(outGoingMoon).status(201);
 	}
 
-	public void deleteMoon(Context ctx) {
+	public void deleteMoon(Context ctx) throws SQLException{
 		
 		int moonId = ctx.pathParamAsClass("id", Integer.class).get();
 		
@@ -66,7 +66,7 @@ public class MoonController {
 		ctx.json("Moon successfully deleted").status(202);
 	}
 	
-	public void getPlanetMoons(Context ctx) {
+	public void getPlanetMoons(Context ctx) throws SQLException{
 		
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		

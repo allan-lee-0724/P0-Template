@@ -40,52 +40,35 @@ public class PlanetDao {
 
 			return planets;
 
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return List.of();
-		}
+		} 
 	}
 
-	public Planet getPlanetByName(String owner, String planetName) {
+	public Planet getPlanetByName(String owner, String planetName) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
-			UserDao ud = new UserDao();
-			User user = ud.getUserByUsername(owner);
-			
-			int userId = user.getId();
-			String sql = "select * from planets where ownerId = ? and name = ?";
+			String sql = "select * from planets where name = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
-			ps.setInt(1, userId);
-			ps.setString(2, planetName);
+			ps.setString(1, planetName);
 
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 
 			Planet planet = new Planet();
 			planet.setId(rs.getInt(1));
-			planet.setOwnerId(userId);
-			planet.setName(planetName);
+			planet.setName(rs.getString(2));
+			planet.setOwnerId(rs.getInt(3));
 
 			return planet;	
 			
-			
-		} catch (SQLException e){
-			System.out.println(e.getMessage());
-			return new Planet();
-		}
+		} 
 	}
 
-	public Planet getPlanetById(String username, int planetId) {
+	public Planet getPlanetById(String username, int planetId) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
-			UserDao ud = new UserDao();
-			User user = ud.getUserByUsername(username);
-
-			int userId = user.getId();
-			String sql = "select * from planets where ownerId = ? and id = ?";
+			String sql = "select * from planets where id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
-			ps.setInt(1, user.getId());
-			ps.setInt(2, planetId);
+			ps.setInt(1, planetId);
 
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -93,28 +76,18 @@ public class PlanetDao {
 			Planet planet = new Planet();
 			planet.setId(planetId);
 			planet.setName(rs.getString(2));
-			planet.setOwnerId(userId);
+			planet.setOwnerId(rs.getInt(3));
 
 			return planet;
 
-
-		}catch(SQLException e){
-			System.out.println(e.getMessage());
-			return new Planet();
 		}
 	}
 
-	public Planet createPlanet(String username, Planet p) {
+	public Planet createPlanet(String username, Planet p) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "insert into planets values (default, ?, ?)";
 			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-			UserDao ud = new UserDao();
-			User user = new User();
-
-			user = ud.getUserByUsername(username);
-			
-			p.setOwnerId(user.getId());
 			ps.setString(1, p.getName());
 			ps.setInt(2, p.getOwnerId());
 
@@ -123,40 +96,27 @@ public class PlanetDao {
 			rs.next();
 
 			Planet newPlanet = new Planet();
-			int newId = rs.getInt("id");
-			newPlanet.setId(newId);
+			newPlanet.setId(rs.getInt("id"));
 			newPlanet.setOwnerId(p.getOwnerId());
 			newPlanet.setName(p.getName());
 
 			return newPlanet;	
 
-			
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return new Planet();
-		}
+		} 
 	}
 
-	public void deletePlanetById(int planetId) {
+	public void deletePlanetById(int planetId) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "delete from planets where id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, planetId);
 			int rowsAffected = ps.executeUpdate();
-			System.out.println("Rows affected: " + rowsAffected);
-		} catch(SQLException e){
-			System.out.println(e.getMessage()); // good spot to add some logging?
-		}
-	}
-
-
-	public static void main(String[] args) {
-		PlanetDao planetDao = new PlanetDao();
-		planetDao.deletePlanetById(4);
-		try{
-			System.out.println(planetDao.getAllPlanets());
-		} catch(Exception e){
-			System.out.println(e.getMessage());
+			if(rowsAffected == 0){
+				System.out.println("DELETION FAILED: NO SUCH ENTRY");
+			} else{
+				System.out.println("DELETION SUCCESSFUL");
+				System.out.println("ROWS AFFECTED: " + rowsAffected);
+			} 
 		}
 	}
 }

@@ -7,8 +7,6 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 import com.revature.models.Moon;
 import com.revature.models.User;
@@ -16,8 +14,6 @@ import com.revature.utilities.ConnectionUtil;
 
 public class MoonDao {
     
-	public static Logger logger = LoggerFactory.getLogger(MoonDao.class);
-	
     public List<Moon> getAllMoons() throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "select * from moons";
@@ -41,15 +37,11 @@ public class MoonDao {
 		} 
 	}
 
-	public Moon getMoonByName(String username, String moonName) {
+	public Moon getMoonByName(String username, String moonName)  throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
-			UserDao ud = new UserDao();
-			User user = ud.getUserByUsername(username);
-			
-			String sql = "select * from moons where ownerId = ? and name = ?";
+			String sql = "select * from moons where name = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setInt(1, user.getId());
-			ps.setString(2, moonName);
+			ps.setString(1, moonName);
 
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -60,22 +52,15 @@ public class MoonDao {
 			moon.setMyPlanetId(rs.getInt(3));
 
 			return moon;
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return new Moon();
-		}
+		} 
 	}
 
-	public Moon getMoonById(String username, int moonId) {
+	public Moon getMoonById(String username, int moonId) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
-			UserDao ud = new UserDao();
-			User user = ud.getUserByUsername(username);
-			
-			String sql = "select * from moons where ownerId = ? and id = ?";
+			String sql = "select * from moons where id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 
-			ps.setInt(1, user.getId());
-			ps.setInt(2, moonId);
+			ps.setInt(1, moonId);
 
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -87,22 +72,16 @@ public class MoonDao {
 
 			return moon;
 			
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return new Moon();
-		}
+		} 
 	}
 
-	public Moon createMoon(String username, Moon m) {
+	public Moon createMoon(String username, Moon m) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
-			UserDao ud = new UserDao();
-			User user = ud.getUserByUsername(username);
-			
 			String sql = "insert into moons values (default, ?, ?)";
 			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			ps.setString(1, m.getName());
-			ps.setInt(2, user.getId());
+			ps.setInt(2, m.getMyPlanetId());
 
 			ps.execute();
 			ResultSet rs = ps.getGeneratedKeys();
@@ -115,13 +94,10 @@ public class MoonDao {
 
 			return newMoon;
 			
-		} catch(SQLException e){
-			System.out.println(e.getMessage());
-			return new Moon();
-		}
+		} 
 	}
 
-	public void deleteMoonById(int moonId) {
+	public void deleteMoonById(int moonId) throws SQLException{
 		try(Connection connection = ConnectionUtil.createConnection()){
 			String sql = "delete from moons where id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
@@ -129,11 +105,14 @@ public class MoonDao {
 			ps.setInt(1, moonId);
 
 			int rowsAffected = ps.executeUpdate();
-			System.out.println("Rows affected: " + rowsAffected);
+			if(rowsAffected == 0){
+				System.out.println("DELETION FAILED: NO SUCH ENTRY");
+			} else{
+				System.out.println("DELETION SUCCESSFUL");
+				System.out.println("ROWS AFFECTED: " + rowsAffected);
+			} 
 
-		} catch(SQLException e){
-			System.out.println(e.getMessage()); // Good spot to add some logging?
-		}
+		} 
 	}
 
 	public List<Moon> getMoonsFromPlanet(int planetId) throws SQLException{
@@ -148,9 +127,10 @@ public class MoonDao {
 
 			while(rs.next()){
 				Moon moon = new Moon();
-				moon.setMyPlanetId(planetId);
-				moon.setName(sql);
-				moon.setId(planetId);
+				moon.setId(rs.getInt(1));
+				moon.setName(rs.getString(2));
+				moon.setMyPlanetId(rs.getInt(3));
+				
 
 				moons.add(moon);
 			}

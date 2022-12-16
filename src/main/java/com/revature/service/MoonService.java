@@ -18,19 +18,19 @@ public class MoonService {
 		return this.dao.getAllMoons();
 	}
 
-	public Moon getMoonByName(String username, String moonName) {
+	public Moon getMoonByName(String username, String moonName) throws SQLException{
 		return this.dao.getMoonByName(username, moonName);
 	}
 
-	public Moon getMoonById(String username, int moonId) {
+	public Moon getMoonById(String username, int moonId) throws SQLException{
 		return this.dao.getMoonById(username, moonId);
 	}
 
-	public Moon createMoon(String username, Moon m) {
+	public Moon createMoon(String username, Moon m) throws SQLException{
 		return this.dao.createMoon(username, m);
 	}
 
-	public void deleteMoonById(int moonId) {
+	public void deleteMoonById(int moonId) throws SQLException{
 		this.dao.deleteMoonById(moonId);
 	}
 

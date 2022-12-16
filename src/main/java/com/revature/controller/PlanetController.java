@@ -20,7 +20,7 @@ public class PlanetController {
 
 	private PlanetService pService = new PlanetService();
 
-	public void getAllPlanets(Context ctx) {
+	public void getAllPlanets(Context ctx) throws SQLException{
 		
 		try{
 			ctx.json(pService.getAllPlanets()).status(200);
@@ -29,7 +29,7 @@ public class PlanetController {
 		}
 	}
 
-	public void getPlanetByName(Context ctx) {
+	public void getPlanetByName(Context ctx) throws SQLException{
 		
 		User u = ctx.sessionAttribute("user");
 		String planetName = ctx.pathParam("name");
@@ -39,7 +39,7 @@ public class PlanetController {
 		ctx.json(p).status(200);
 	}
 
-	public void getPlanetByID(Context ctx) {
+	public void getPlanetByID(Context ctx) throws SQLException{
 		
 		User u = ctx.sessionAttribute("user");
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
@@ -50,7 +50,7 @@ public class PlanetController {
 	}
 
 
-	public void createPlanet(Context ctx) {
+	public void createPlanet(Context ctx) throws SQLException{
 		
 		Planet planetToBeCreated = ctx.bodyAsClass(Planet.class);
 		User u = ctx.sessionAttribute("user");
@@ -60,7 +60,7 @@ public class PlanetController {
 		ctx.json(createdPlanet).status(201);
 	}
 
-	public void deletePlanet(Context ctx) {
+	public void deletePlanet(Context ctx) throws SQLException{
 		
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		

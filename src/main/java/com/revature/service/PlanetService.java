@@ -18,19 +18,19 @@ public class PlanetService {
 		return this.dao.getAllPlanets();
 	}
 
-	public Planet getPlanetByName(String owner, String planetName) {
+	public Planet getPlanetByName(String owner, String planetName) throws SQLException{
 		return this.dao.getPlanetByName(owner, planetName);
 	}
 
-	public Planet getPlanetById(String username, int planetId) {
+	public Planet getPlanetById(String username, int planetId) throws SQLException{
 		return this.dao.getPlanetById(username, planetId);
 	}
 
-	public Planet createPlanet(String username, Planet p) {
+	public Planet createPlanet(String username, Planet p) throws SQLException{
 		return this.dao.createPlanet(username, p);
 	}
 
-	public void deletePlanetById(int planetId) {
+	public void deletePlanetById(int planetId) throws SQLException{
 		this.dao.deletePlanetById(planetId);
 	}
 }

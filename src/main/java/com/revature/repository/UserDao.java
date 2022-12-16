@@ -12,7 +12,7 @@ import com.revature.utilities.ConnectionUtil;
 
 public class UserDao {
     
-    public User getUserByUsername(String username){
+    public User getUserByUsername(String username) throws SQLException{
         try(Connection connection = ConnectionUtil.createConnection()){
             String sql = "select * from users where username = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -28,13 +28,10 @@ public class UserDao {
             user.setPassword(rs.getString(3));
 
             return user;
-        } catch(SQLException e){
-            System.out.println(e.getMessage());
-            return new User();
-        }
+        } 
     }
 
-    public User createUser(UsernamePasswordAuthentication registerRequest){
+    public User createUser(UsernamePasswordAuthentication registerRequest) throws SQLException{
         try(Connection connection = ConnectionUtil.createConnection()){
             String sql = "insert into users values (default, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -54,9 +51,6 @@ public class UserDao {
 
             return newUser;
 
-        }catch(SQLException e){
-            System.out.println(e.getMessage());
-            return new User();
         }
     }
 

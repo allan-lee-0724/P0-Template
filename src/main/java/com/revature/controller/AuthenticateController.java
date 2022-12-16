@@ -1,5 +1,7 @@
 package com.revature.controller;
 
+import java.sql.SQLException;
+
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.service.UserService;
@@ -10,7 +12,7 @@ public class AuthenticateController {
 	
 	private UserService userService = new UserService();
 
-	public void authenticate(Context ctx) {
+	public void authenticate(Context ctx) throws SQLException{
 		
 		UsernamePasswordAuthentication loginRequest = ctx.bodyAsClass(UsernamePasswordAuthentication.class);
 		
@@ -24,7 +26,7 @@ public class AuthenticateController {
 		}
 	}
 
-	public void register(Context ctx) {
+	public void register(Context ctx) throws SQLException{
 		/*
 		 * There is no code to handle something going wrong, like accidentally trying to create an 
 		 * account with a username that is already taken. Be aware of this, don't worry about handling that
