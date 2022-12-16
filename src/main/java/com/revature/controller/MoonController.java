@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.models.Moon;
-import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.service.MoonService;
 import org.slf4j.LoggerFactory;
@@ -19,12 +18,7 @@ public class MoonController {
 	private MoonService mService = new MoonService();
 
 	public void getAllMoons(Context ctx) throws SQLException{
-		
-		try{
-			ctx.json(mService.getAllMoons()).status(200);
-		} catch (SQLException e){
-			logger.error(e.getMessage());
-		}
+		ctx.json(mService.getAllMoons()).status(200);
 	}
 
 	public void getMoonByName(Context ctx) throws SQLException{
@@ -60,23 +54,25 @@ public class MoonController {
 	public void deleteMoon(Context ctx) throws SQLException{
 		
 		int moonId = ctx.pathParamAsClass("id", Integer.class).get();
+
+		if(moonId != 0){
+			mService.deleteMoonById(moonId);
 		
-		mService.deleteMoonById(moonId);
+			ctx.json("DELETION SUCCESSFUL: Moon successfully deleted").status(202);
+		} else{
+			ctx.json("DELETION FAILED: No entry found").status(204);
+		}
 		
-		ctx.json("Moon successfully deleted").status(202);
+		
 	}
 	
 	public void getPlanetMoons(Context ctx) throws SQLException{
 		
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		
-		try{
-			List<Moon> moonList = mService.getMoonsFromPlanet(planetId);
+		List<Moon> moonList = mService.getMoonsFromPlanet(planetId);
 
-			ctx.json(moonList).status(200);
-		} catch(SQLException e){
-			logger.error(e.getMessage());
-		}
+		ctx.json(moonList).status(200);
 		
 		
 	}

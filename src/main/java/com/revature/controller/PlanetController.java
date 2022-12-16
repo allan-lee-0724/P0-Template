@@ -1,18 +1,14 @@
 package com.revature.controller;
 
 import java.sql.SQLException;
-import java.util.List;
 
-import com.revature.models.Moon;
 import com.revature.models.Planet;
 import com.revature.models.User;
-import com.revature.service.MoonService;
 import com.revature.service.PlanetService;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import io.javalin.http.Context;
-import io.javalin.validation.Validator;
 
 public class PlanetController {
 	
@@ -64,7 +60,12 @@ public class PlanetController {
 		
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		
-		pService.deletePlanetById(planetId);
-		ctx.json("Planet successfully deleted").status(202);
+		if(planetId != 0){
+			pService.deletePlanetById(planetId);
+		
+			ctx.json("DELETION SUCCESSFUL: Planet successfully deleted").status(202);
+		} else{
+			ctx.json("DELETION FAILED: No entry found").status(204);
+		}
 	}
 }
