@@ -25,18 +25,43 @@ avgRate=$(echo "scale=2; $actualRateDecimal * 100" | bc)
 
 echo "AVERAGE SUCCESS RATE: $avgRate%"
 
+# Check if average success rate meets target rate
+if (($(echo "$avgRate >= $targetRate" | bc -l)))
+then
+	echo "TARGET SUCCESS RATE SATISFIED"
+else
+	echo "TARGET SUCCESS RATE NOT SATISFIED"
+fi
+
 # This part is to extract latencies from the log file
 httpLatencies=$(grep Response: ./logs/rollingFile.log | cut -f 2 -d : | cut -f 2 -d , | cut -f 4 -d ' ')
+
+# Setting up variables for total lantency and number of entries
 totalLatency=0
 numOfEntry=0
 
+# Setting up SLO target latency
+targetLatency=200
+latencySuccess=0
+latencyFail=0
+
 for latency in $httpLatencies
 do
+	if (($(echo "$latency <= $targetLatency" | bc -l))) 
+	then
+		((latencySuccess++))
+	else
+		((latencyFail++))
+	fi
+
 	totalLatency=$(echo "scale=3; $totalLatency + $latency" | bc)
 	((numOfEntry++))
 done
 
+# Setting up SLO target latency and calculate average latency
 avgLatency=$(echo "scale=3; $totalLatency / $numOfEntry" | bc)
+
+echo "NUMBER OF ATTEMPTS SATISFYING SLO: $latencySuccess"
 echo "AVERAGE LATENCY: $avgLatency ms"
 
 

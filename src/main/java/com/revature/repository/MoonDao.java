@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.revature.models.Moon;
-import com.revature.models.User;
 import com.revature.utilities.ConnectionUtil;
 
 public class MoonDao {

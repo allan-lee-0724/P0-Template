@@ -95,9 +95,9 @@ public class PlanetDao {
 			rs.next();
 
 			Planet newPlanet = new Planet();
-			newPlanet.setId(rs.getInt("id"));
-			newPlanet.setOwnerId(p.getOwnerId());
-			newPlanet.setName(p.getName());
+			newPlanet.setId(rs.getInt(1));
+			newPlanet.setName(rs.getString(2));
+			newPlanet.setOwnerId(rs.getInt(3));
 
 			return newPlanet;	
 
