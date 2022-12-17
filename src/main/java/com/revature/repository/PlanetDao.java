@@ -109,6 +109,14 @@ public class PlanetDao {
 			String sql = "delete from planets where id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, planetId);
+
+			int rowsAffected = ps.executeUpdate();
+			if(rowsAffected == 0){
+				System.out.println("DELETION FAILED: NO SUCH ENTRY");
+			} else{
+				System.out.println("DELETION SUCCESSFUL");
+				System.out.println("ROWS AFFECTED: " + rowsAffected);
+			} 
 		}
 	}
 }
