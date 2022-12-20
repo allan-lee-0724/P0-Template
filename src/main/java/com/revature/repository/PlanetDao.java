@@ -109,14 +109,22 @@ public class PlanetDao {
 			String sql = "delete from planets where id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, planetId);
+		}
+	}
 
-			int rowsAffected = ps.executeUpdate();
-			if(rowsAffected == 0){
-				System.out.println("DELETION FAILED: NO SUCH ENTRY");
-			} else{
-				System.out.println("DELETION SUCCESSFUL");
-				System.out.println("ROWS AFFECTED: " + rowsAffected);
-			} 
+	public void dropPlanetTable() throws SQLException{
+		try(Connection connection = ConnectionUtil.createConnection()){
+			String sql = "drop table planets cascade";
+			Statement statement = connection.createStatement();
+			int tableAffected = statement.executeUpdate(sql);
+		} 
+	}
+
+	public void createPlanetTable() throws SQLException{
+		try(Connection connection = ConnectionUtil.createConnection()){
+			String sql = "create table planets(id serial primary key, name varchar(20), ownerId int references users(id) on delete cascade)";
+			Statement statement = connection.createStatement();
+			int tableAffected = statement.executeUpdate(sql);
 		}
 	}
 }

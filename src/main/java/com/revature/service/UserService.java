@@ -27,4 +27,12 @@ public class UserService {
 		return this.dao.createUser(registerRequest);
 	}
 
+	public void createUserTable() throws SQLException{
+		this.dao.createUserTable();
+	}
+
+	public void dropUser(String username) throws SQLException{
+		this.dao.dropUser(username);
+	}
+
 }

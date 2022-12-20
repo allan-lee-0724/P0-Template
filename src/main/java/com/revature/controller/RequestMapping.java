@@ -1,7 +1,5 @@
 package com.revature.controller;
 
-import java.sql.SQLException;
-
 import com.revature.exceptions.NotLoggedInException;
 
 import io.javalin.Javalin;
@@ -12,7 +10,7 @@ public class RequestMapping {
 	private static PlanetController planetController = new PlanetController();
 	private static MoonController moonController = new MoonController();
 	
-	public static void setupEndpoints(Javalin app) throws SQLException{
+	public static void setupEndpoints(Javalin app){
 		
 		// Authenticate user and create a session for the user, sending username/password in the body as JSON
 		app.post("/login", ctx -> authController.authenticate(ctx));
@@ -65,6 +63,15 @@ public class RequestMapping {
 		
 		// Create a new moon, sending the data in the body as JSON
 		app.post("api/moon", ctx -> moonController.createMoon(ctx));
+
+		// Create a new planets table
+		app.post("/api/table/planets", ctx -> planetController.createPlanetTable(ctx));
+
+		// Create a new moons table
+		app.post("/api/table/moons", ctx -> moonController.createMoonTable(ctx));
+
+		// Create a new users table
+		app.post("api/tablet/users", ctx -> authController.createUserTable(ctx));
 		
 
 		// Delete a planet and all of its moons
@@ -72,5 +79,14 @@ public class RequestMapping {
 		
 		// Delete a moon
 		app.delete("api/moon/{id}", ctx -> moonController.deleteMoon(ctx));
+
+		// Delete planets table
+		app.delete("api/table/planets", ctx -> planetController.dropPlanetTable(ctx));
+
+		// Delete moons table
+		app.delete("api/table/moons", ctx -> moonController.dropMoonTable(ctx));
+
+		// Delete user
+		app.delete("api/user", ctx -> authController.dropUser(ctx));
 	}
 }

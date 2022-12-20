@@ -104,12 +104,6 @@ public class MoonDao {
 			ps.setInt(1, moonId);
 
 			int rowsAffected = ps.executeUpdate();
-			if(rowsAffected == 0){
-				System.out.println("DELETION FAILED: NO SUCH ENTRY");
-			} else{
-				System.out.println("DELETION SUCCESSFUL");
-				System.out.println("ROWS AFFECTED: " + rowsAffected);
-			} 
 
 		} 
 	}
@@ -137,5 +131,21 @@ public class MoonDao {
 			return moons;
 
 		} 
+	}
+
+	public void dropMoonTable() throws SQLException{
+		try(Connection connection = ConnectionUtil.createConnection()){
+			String sql = "drop table moons cascade";
+			Statement statement = connection.createStatement();
+			int tableAffected = statement.executeUpdate(sql);
+		} 
+	}
+
+	public void createMoonTable() throws SQLException{
+		try(Connection connection = ConnectionUtil.createConnection()){
+			String sql = "create table moons(id serial primary key, name varchar(20), myPlanetId int references planets(id) on delete cascade)";
+			Statement statement = connection.createStatement();
+			int tableAffected = statement.executeUpdate(sql);
+		}
 	}
 }

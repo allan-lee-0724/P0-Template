@@ -33,5 +33,13 @@ public class PlanetService {
 	public void deletePlanetById(int planetId) throws SQLException{
 		this.dao.deletePlanetById(planetId);
 	}
+
+	public void dropPlanetTable() throws SQLException{
+		this.dao.dropPlanetTable();
+	}
+
+	public void createPlanetTable() throws SQLException{
+		this.dao.createPlanetTable();
+	}
 }
 

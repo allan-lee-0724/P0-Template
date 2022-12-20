@@ -37,4 +37,12 @@ public class MoonService {
 	public List<Moon> getMoonsFromPlanet(int planetId) throws SQLException{
 		return this.dao.getMoonsFromPlanet(planetId);
 	}
+
+	public void dropMoonTable() throws SQLException{
+		this.dao.dropMoonTable();
+	}
+
+	public void createMoonTable() throws SQLException{
+		this.dao.createMoonTable();
+	}
 }
