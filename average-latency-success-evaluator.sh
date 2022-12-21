@@ -1,3 +1,6 @@
+# Interpreter line
+#!/bin/bash
+
 # This part is to extract status code from the log file. 100-400 codes represent success. 500 codes represent failure
 httpStatusCodes=$(grep Response: ./logs/rollingFile.log | cut -f 1 -d , | cut -f 2 -d '[' | cut -f 1 -d ' ')
 
