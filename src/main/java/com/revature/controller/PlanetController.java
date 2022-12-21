@@ -6,7 +6,6 @@ import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.service.PlanetService;
 import org.slf4j.LoggerFactory;
-import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 
 import io.javalin.http.Context;
